@@ -1,11 +1,20 @@
-import { Card } from "react-native-elements";
+import { Card, Icon } from "react-native-elements";
 import * as React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { set } from "react-native-reanimated";
+import { ScreenStackHeaderLeftView } from "react-native-screens";
 
 const CountryStats = ({ route, navigation }) => {
+  navigation.setOptions({
+    title: route.params.name,
+    headerRight: () => FavIcon(),
+  });
+
   const [statsObj, setStatsObj] = React.useState({});
   const [totalPop, setTotalPop] = React.useState("");
+  const [fav, setFav] = React.useState(false);
   const { name } = route.params;
 
   const options = {
@@ -16,6 +25,93 @@ const CountryStats = ({ route, navigation }) => {
       "x-rapidapi-host": "world-population.p.rapidapi.com",
       "x-rapidapi-key": "f2fdedfd95msh151232a4268def5p1b5e94jsn35e3f7db2908",
     },
+  };
+
+  React.useEffect(() => {
+    getData();
+  }, [name]);
+
+  React.useEffect(() => {
+    getCovidFromApi();
+    getPopFromApi();
+  }, []);
+
+  const FavIcon = () => {
+    if (fav == false) {
+      return (
+        <Icon
+          name="heart"
+          type="evilicon"
+          color="#bb4a62"
+          size={38}
+          onPress={() => storeFav()}
+        />
+      );
+    }
+    return (
+      <Icon
+        name="heart"
+        type="font-awesome"
+        color="#bb4a62"
+        size={35}
+        onPress={() => unFav()}
+      />
+    );
+  };
+
+  const getData = async () => {
+    try {
+      const jsonValue = JSON.parse(await AsyncStorage.getItem("@Favs"));
+      if (jsonValue != null) {
+        console.log(jsonValue);
+        if (jsonValue.includes(name)) {
+          setFav(true);
+        }
+      }
+    } catch (e) {
+      // error reading value
+    }
+  };
+
+  const unFav = async (value) => {
+    setFav(false);
+    let newArr = [];
+    try {
+      let oldData = JSON.parse(await AsyncStorage.getItem("@Favs"));
+      if (oldData != null) {
+        newArr = oldData;
+      }
+      let i = newArr.indexOf(name);
+      newArr.splice(i, 1);
+
+      console.log(newArr);
+      //AsyncStorage.clear();
+      await AsyncStorage.setItem("@Favs", JSON.stringify(newArr));
+      console.log("done saving");
+    } catch (e) {
+      // saving error
+    }
+  };
+
+  const storeFav = async (value) => {
+    //AsyncStorage.clear();
+    setFav(true);
+    let newArr = [];
+    try {
+      let oldData = JSON.parse(await AsyncStorage.getItem("@Favs"));
+      if (oldData != null) {
+        newArr = oldData;
+      }
+
+      console.log(newArr);
+      newArr.push(name);
+
+      console.log(newArr);
+
+      await AsyncStorage.setItem("@Favs", JSON.stringify(newArr));
+    } catch (e) {
+      // saving error
+    }
   };
 
   const covidOptions = {
@@ -50,17 +146,12 @@ const CountryStats = ({ route, navigation }) => {
       });
   };
 
-  React.useEffect(() => {
-    getCovidFromApi();
-    getPopFromApi();
-  }, []);
-
   return (
     <View style={styles.container}>
       <View style={styles.top}>
         <View style={{ marginLeft: 30, marginTop: 35 }}>
           <Text style={styles.topText}>Covid-19 Statistics</Text>
-          <Text style={styles.topText}>{name} Stats</Text>
+          <Text style={styles.topText}>{name}</Text>
           <Text style={styles.dateText}>
             Last Updated: {statsObj.lastUpdate}
           </Text>

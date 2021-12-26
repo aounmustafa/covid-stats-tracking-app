@@ -1,7 +1,15 @@
 import { ListItem, Icon, SearchBar } from "react-native-elements";
 import * as React from "react";
-import { View, Text, StyleSheet, FlatList, Button } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  Button,
+  Touchable,
+} from "react-native";
 import axios from "axios";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 const CountriesScreen = ({ navigation }) => {
   const options = {
@@ -58,10 +66,6 @@ const CountriesScreen = ({ navigation }) => {
         onChangeText={setSearch}
         value={search}
       />
-      <Button
-        title="press"
-        onPress={() => navigation.navigate("Country Stats", { name: "India" })}
-      />
       <FlatList
         data={search.length < 1 ? countries : searchResults()}
         renderItem={({ item }) => <CountryRow country={item} />}
@@ -69,9 +73,6 @@ const CountriesScreen = ({ navigation }) => {
       />
     </View>
   );
-};
-const FavIcon = () => {
-  return <Icon name="heart" type="evilicon" color="#bb4a62" size={30} />;
 };
 const EmptyMessage = () => {
   return (

@@ -7,45 +7,47 @@ import WorldScreen from "./WorldScreen";
 import Countries from "./Countries";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import CountryStats from "./CountryStats";
+import FavScreen from "./FavScreen";
 const Drawer = createDrawerNavigator();
 
 const Stack = createNativeStackNavigator();
 
-function MyStack() {
-  return (
-    <Stack.Navigator>
-      <Stack.Screen name="Countries" component={Countries} />
-      <Stack.Screen name="WorldScreen" component={WorldScreen} />
-      <Stack.Screen name="Country Stats" component={CountryStats} />
-    </Stack.Navigator>
-  );
-}
-
-function Screen2() {
-  return (
-    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-      <Text>2 Screen</Text>
-    </View>
-  );
-}
-
-// function WorldScreen({ navigation }) {
-//   return (
-//     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-//       <Button title="Clck" onPress={() => navigation.navigate("2")} />
-//       <Text>World Screen</Text>
-//     </View>
-//   );
-// }
 function App() {
   return (
     <NavigationContainer>
-      {/* <Drawer.Navigator>
-        <Drawer.Screen name="Home" component={MyStack} />
-        <Drawer.Screen name="Countries" component={Countries} /> */}
-      <MyStack />
-      {/* </Drawer.Navigator> */}
+      <Stack.Navigator>
+        <Stack.Screen
+          name="WorldScreen"
+          component={MyStack}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Countries"
+          component={Countries}
+          // options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Country Stats"
+          component={CountryStats}
+          // options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="FavScreen"
+          component={FavScreen}
+          // options={{ headerShown: false }}
+        />
+      </Stack.Navigator>
     </NavigationContainer>
+  );
+}
+
+function MyStack() {
+  return (
+    <Drawer.Navigator>
+      <Drawer.Screen name="World Stats" component={WorldScreen} />
+      <Drawer.Screen name="All Countries" component={Countries} />
+      <Drawer.Screen name="Favourties" component={FavScreen} />
+    </Drawer.Navigator>
   );
 }
 

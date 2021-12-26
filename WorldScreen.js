@@ -40,6 +40,7 @@ function WorldScreen({ navigation }) {
     axios
       .request(covidOptions)
       .then(function (response) {
+        console.log(response.data[0]);
         setStatsObj(response.data[0]);
       })
       .catch(function (error) {
@@ -53,7 +54,6 @@ function WorldScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Button title="Clck" onPress={() => navigation.navigate("Countries")} />
       <View style={styles.top}>
         <View style={{ marginLeft: 30, marginTop: 35 }}>
           <Text style={styles.topText}>Covid-19 Statistics</Text>
@@ -61,6 +61,9 @@ function WorldScreen({ navigation }) {
           <Text style={styles.dateText}>
             Last Updated: {statsObj.lastUpdate}
           </Text>
+          {/* <Text style={styles.dateText}>
+            Time: {statsObj.lastUpdate.slice(11)} */}
+          {/* </Text> */}
         </View>
       </View>
       <View style={styles.bottom}>
